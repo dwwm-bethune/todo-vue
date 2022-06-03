@@ -38,7 +38,7 @@
         </li>
       </ul>
       <!-- Hidden if no completed items are left ↓ -->
-      <button class="clear-completed">Clear completed</button>
+      <button class="clear-completed" v-if="completeds.length > 0" @click="removeCompleteds">Clear completed</button>
     </footer>
   </section>
 </template>
@@ -62,6 +62,17 @@ export default {
     removeTodo(todo) {
       this.todos.splice(this.todos.indexOf(todo), 1);
     },
+    removeCompleteds() {
+      this.todos = this.actives;
+    },
+  },
+  computed: {
+    completeds() {
+      return this.todos.filter(todo => todo.state);
+    },
+    actives() {
+      return this.todos.filter(todo => !todo.state);
+    }
   }
 };
 </script>
