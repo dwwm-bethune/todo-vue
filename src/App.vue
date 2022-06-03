@@ -11,18 +11,10 @@
       <ul class="todo-list">
         <!-- These are here just to show the structure of the list items -->
         <!-- List items should get the class `editing` when editing and `completed` when marked as completed -->
-        <li class="completed">
+        <li v-for="(todo, index) in todos" :key="index" :class="{ completed: todo.state }">
           <div class="view">
-            <input class="toggle" type="checkbox" checked />
-            <label>Taste JavaScript</label>
-            <button class="destroy"></button>
-          </div>
-          <input class="edit" value="Create a TodoMVC template" />
-        </li>
-        <li>
-          <div class="view">
-            <input class="toggle" type="checkbox" />
-            <label>Buy a unicorn</label>
+            <input class="toggle" type="checkbox" :checked="todo.state" />
+            <label>{{ todo.name }}</label>
             <button class="destroy"></button>
           </div>
           <input class="edit" value="Rule the web" />
@@ -32,7 +24,7 @@
     <!-- This footer should be hidden by default and shown when there are todos -->
     <footer class="footer">
       <!-- This should be `0 items left` by default -->
-      <span class="todo-count"><strong>0</strong> item left</span>
+      <span class="todo-count"><strong>{{ todos.length }}</strong> item(s) left</span>
       <!-- Remove this if you don't implement routing -->
       <ul class="filters">
         <li>
@@ -52,7 +44,16 @@
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      todos: [
+        { name: 'Taste JavaScript', state: true },
+        { name: 'Buy a unicorn', state: false },
+      ],
+    };
+  },
+};
 </script>
 
 <style>
