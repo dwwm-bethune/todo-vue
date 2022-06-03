@@ -2,7 +2,7 @@
   <section class="todoapp">
     <header class="header">
       <h1>todos</h1>
-      <input class="new-todo" placeholder="What needs to be done?" autofocus />
+      <input class="new-todo" placeholder="What needs to be done?" autofocus v-model="newTodo" @keyup.enter="addTodo" />
     </header>
     <!-- This section should be hidden by default and shown when there are todos -->
     <section class="main">
@@ -51,8 +51,15 @@ export default {
         { name: 'Taste JavaScript', state: true },
         { name: 'Buy a unicorn', state: false },
       ],
+      newTodo: '',
     };
   },
+  methods: {
+    addTodo() {
+      this.todos.push({ name: this.newTodo, state: false });
+      this.newTodo = '';
+    },
+  }
 };
 </script>
 
