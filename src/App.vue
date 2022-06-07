@@ -11,7 +11,7 @@
       <ul class="todo-list">
         <!-- These are here just to show the structure of the list items -->
         <!-- List items should get the class `editing` when editing and `completed` when marked as completed -->
-        <li v-for="(todo, index) in todos" :key="index" :class="{ completed: todo.state }">
+        <li v-for="(todo, index) in todos" :key="index" :class="{ completed: todo.state }" v-show="filter == 'all' || todo.state == (filter == 'completed')">
           <div class="view">
             <input class="toggle" type="checkbox" :checked="todo.state" v-model="todo.state" />
             <label>{{ todo.name }}</label>
@@ -28,13 +28,13 @@
       <!-- Remove this if you don't implement routing -->
       <ul class="filters">
         <li>
-          <a class="selected" href="#/">All</a>
+          <a :class="{ selected: filter == 'all' }" href="#/" @click="filter = 'all'">All</a>
         </li>
         <li>
-          <a href="#/active">Active</a>
+          <a :class="{ selected: filter == 'active' }" href="#/active" @click="filter = 'active'">Active</a>
         </li>
         <li>
-          <a href="#/completed">Completed</a>
+          <a :class="{ selected: filter == 'completed' }" href="#/completed" @click="filter = 'completed'">Completed</a>
         </li>
       </ul>
       <!-- Hidden if no completed items are left ↓ -->
@@ -52,6 +52,7 @@ export default {
         { name: 'Buy a unicorn', state: false },
       ],
       newTodo: '',
+      filter: 'all',
     };
   },
   methods: {
