@@ -11,13 +11,13 @@
       <ul class="todo-list">
         <!-- These are here just to show the structure of the list items -->
         <!-- List items should get the class `editing` when editing and `completed` when marked as completed -->
-        <li v-for="(todo, index) in todos" :key="index" :class="{ completed: todo.state }" v-show="filter == 'all' || todo.state == (filter == 'completed')">
+        <li v-for="(todo, index) in todos" :key="index" :class="{ completed: todo.state, editing: todo == editing }" v-show="filter == 'all' || todo.state == (filter == 'completed')">
           <div class="view">
             <input class="toggle" type="checkbox" :checked="todo.state" v-model="todo.state" />
-            <label>{{ todo.name }}</label>
+            <label @dblclick="edit(todo)">{{ todo.name }}</label>
             <button class="destroy" @click="removeTodo(todo)"></button>
           </div>
-          <input class="edit" value="Rule the web" />
+          <input class="edit" v-model="todo.name" @keyup.enter="editing = null" />
         </li>
       </ul>
     </section>
@@ -53,6 +53,7 @@ export default {
       ],
       newTodo: '',
       filter: 'all',
+      editing: null,
     };
   },
   methods: {
@@ -62,6 +63,9 @@ export default {
     },
     removeTodo(todo) {
       this.todos.splice(this.todos.indexOf(todo), 1);
+    },
+    edit(todo) {
+      this.editing = todo;
     },
     removeCompleteds() {
       this.todos = this.actives;
