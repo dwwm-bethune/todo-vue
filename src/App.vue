@@ -6,8 +6,8 @@
     </header>
     <!-- This section should be hidden by default and shown when there are todos -->
     <section class="main" v-if="todos.length > 0">
-      <input id="toggle-all" class="toggle-all" type="checkbox" />
-      <label for="toggle-all">Mark all as complete</label>
+      <input id="toggle-all" class="toggle-all" type="checkbox" :checked="actives.length == 0" disabled />
+      <label for="toggle-all" @click="toggle">Mark all as complete</label>
       <ul class="todo-list">
         <!-- These are here just to show the structure of the list items -->
         <!-- List items should get the class `editing` when editing and `completed` when marked as completed -->
@@ -65,6 +65,11 @@ export default {
     removeCompleteds() {
       this.todos = this.actives;
     },
+    toggle() {
+      let toggle = this.actives.length != 0;
+
+      this.todos.forEach(todo => todo.state = toggle);
+    }
   },
   computed: {
     completeds() {
