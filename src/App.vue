@@ -11,20 +11,20 @@
       <ul class="todo-list">
         <!-- These are here just to show the structure of the list items -->
         <!-- List items should get the class `editing` when editing and `completed` when marked as completed -->
-        <li v-for="(todo, index) in todos" :key="index" :class="{ completed: todo.state, editing: todo == editing }" v-show="filter == 'all' || todo.state == (filter == 'completed')">
+        <li v-for="(todo, index) in todoFiltereds" :key="index" :class="{ completed: todo.state, editing: todo == editing }" v-show="filter == 'all' || todo.state == (filter == 'completed')">
           <div class="view">
             <input class="toggle" type="checkbox" :checked="todo.state" v-model="todo.state" />
-            <label @dblclick="edit(todo)">{{ todo.name }}</label>
+            <label @dblclick="edit(todo, index)">{{ todo.name }}</label>
             <button class="destroy" @click="removeTodo(todo)"></button>
           </div>
-          <input class="edit" v-model="todo.name" @keyup.enter="editing = null" />
+          <input ref="input" class="edit" v-model="todo.name" @keyup.enter="editing = null" @blur="editing = null" />
         </li>
       </ul>
     </section>
     <!-- This footer should be hidden by default and shown when there are todos -->
     <footer class="footer" v-if="todos.length > 0">
       <!-- This should be `0 items left` by default -->
-      <span class="todo-count"><strong>{{ todos.length }}</strong> item(s) left</span>
+      <span class="todo-count"><strong>{{ actives.length }}</strong> item(s) left</span>
       <!-- Remove this if you don't implement routing -->
       <ul class="filters">
         <li>
@@ -64,23 +64,47 @@ export default {
     removeTodo(todo) {
       this.todos.splice(this.todos.indexOf(todo), 1);
     },
-    edit(todo) {
+    edit(todo, index) {
       this.editing = todo;
+
+      // console.log(getComputedStyle(this.$refs.input[index]).display);
+      // Le $nextTick permet d'exécuter un code après que le DOM soit à jour.
+      this.$nextTick(() => {
+        // console.log(getComputedStyle(this.$refs.input[index]).display)
+        this.$refs.input[index].focus();
+      });
     },
     removeCompleteds() {
       this.todos = this.actives;
     },
     toggle() {
-      let toggle = this.actives.length != 0;
+      let toggle = this.actives.length > 0;
 
       this.todos.forEach(todo => todo.state = toggle);
+
+      // for (let todo of this.todos) {
+      //   todo.state = toggle;
+      // }
     }
   },
   computed: {
     completeds() {
-      return this.todos.filter(todo => todo.state);
+      return this.todos.filter(function (todo) {
+        return todo.state == true;
+      });
     },
     actives() {
+      return this.todos.filter(todo => !todo.state);
+    },
+    todoFiltereds() {
+      if (this.filter == 'all') {
+        return this.todos;
+      }
+
+      if (this.filter == 'completed') {
+        return this.todos.filter(todo => todo.state);
+      }
+
       return this.todos.filter(todo => !todo.state);
     }
   }
